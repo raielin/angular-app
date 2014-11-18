@@ -1,0 +1,46 @@
+<div class="container" ng-controller="UsersCtrl">
+
+<h1>Users</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Title</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="user in users">
+        <td>{{ user.first_name }}</td>
+        <td>{{ user.last_name }}</td>
+        <td>{{ user.title.name }}</td>
+        <td><a ng-href="" ng-click="upsertUser(user)">Update</a> | <a ng-href="" ng-click="deleteUser(user)">Delete</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+<!--   <ul>
+    <li ng-repeat="user in users">
+      {{ user.first_name }} {{ user.last_name }} <a ng-href="" ng-click="upsertUser(user)">Update</a> | <a ng-href="" ng-click="deleteUser(user)">Delete</a>
+    </li>
+  </ul> -->
+  <br/>
+  <h3>Add or Edit a User</h3>
+  <form role="form" name="upsertUsersForm" ng-submit="createAndUpdateUsers(user)" novalidate>
+    <div class="form-group">
+      <!-- <label for="first_name">First Name</label> -->
+      <input type="text" class="form-control" id="first_name" placeholder="First Name" ng-model="user.first_name" required>
+
+      <br/>
+      <!-- <label for="last_name">Last Name</label> -->
+      <input type="text" class="form-control" id="last_name" placeholder="Last Name" ng-model="user.last_name" required>
+
+      <br/>
+      <input type="text" class="form-control" id="title" placeholder="Title" ng-model="user.title.name" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary" ng-disabled="upsertUsersForm.$invalid">Submit</button>
+  </form>
+
+</div>

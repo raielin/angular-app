@@ -11,33 +11,38 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="user in users">
-        <td>{{ user.first_name }}</td>
-        <td>{{ user.last_name }}</td>
-        <td>{{ user.title.name }}</td>
-        <td><a ng-href="" ng-click="upsertUser(user)">Update</a> | <a ng-href="" ng-click="deleteUser(user)">Delete</a></td>
+      <!-- a double colon here will prevent the entire collection from watching for changes. -->
+      <tr ng-repeat="user in ::users">
+        <!-- Double colon says we will load it in once and never update it again. Stops two-way -->
+        <!-- binding after it loads. This does it for each field. -->
+        <td>{{ ::user.first_name }}</td>
+        <td>{{ ::user.last_name }}</td>
+        <td>{{ ::user.title.name }}</td>
+        <td><a ng-click="upsertUser(user)">Update</a> | <a ng-click="deleteUser(user)">Delete</a></td>
       </tr>
     </tbody>
   </table>
 
-<!--   <ul>
-    <li ng-repeat="user in users">
-      {{ user.first_name }} {{ user.last_name }} <a ng-href="" ng-click="upsertUser(user)">Update</a> | <a ng-href="" ng-click="deleteUser(user)">Delete</a>
-    </li>
-  </ul> -->
   <br/>
   <h3>Add or Edit a User</h3>
   <form role="form" name="upsertUsersForm" ng-submit="createAndUpdateUsers(user)" novalidate>
     <div class="form-group">
       <!-- <label for="first_name">First Name</label> -->
       <input type="text" class="form-control" id="first_name" placeholder="First Name" ng-model="user.first_name" required>
+    </div>
 
-      <br/>
+    <div class="form-group">
       <!-- <label for="last_name">Last Name</label> -->
       <input type="text" class="form-control" id="last_name" placeholder="Last Name" ng-model="user.last_name" required>
+    </div>
 
-      <br/>
-      <input type="text" class="form-control" id="title" placeholder="Title" ng-model="user.title.name" required>
+    <div class="form-group">
+      <!-- ng-options generates option tag. we're saying option tag's value is title.id, the second piece is what -->
+      <!-- the user sees, which in this case is title.name -->
+      <select class="form-control" ng-model="user.title_id" ng-options="title.id as title.name for title in titles">
+        <!-- Important to have the value as an empty string. Angular needs this format -->
+        <option value="">Select a Title</option>
+      </select>
     </div>
 
     <button type="submit" class="btn btn-primary" ng-disabled="upsertUsersForm.$invalid">Submit</button>

@@ -10,8 +10,8 @@
     </thead>
     <tbody>
       <tr ng-repeat="title in titles">
-        <td>{{ title.name }}</td>
-        <td><a ng-href="" ng-click="upsertTitle(title)">Update</a> | <a ng-href="" ng-click="deleteTitle(title)">Delete</a></td>
+        <td>{{ ::title.name }}</td>
+        <td><a ng-click="upsertTitle(title)">Update</a> | <a ng-click="deleteTitle(title)">Delete</a></td>
       </tr>
     </tbody>
   </table>

@@ -4,11 +4,18 @@
 // initialize the app
 // Declare Angular routes as a dependency so that Angular knows to pull in the
 // code we installed with bower.
-angular.module('Demo', [
+// Order doesn't matter too much. Realistically, this will all get separated into different files.
+angular.module('StaffingUI', [
     'ngRoute'
 ]);
 
-angular.module('Demo').config(function($routeProvider) {
+// A run module will run this function right away as soon as the
+// page loads. Here, we're going out and grabbing the titles.
+angular.module('StaffingUI').run(function(TitleFactory) {
+  TitleFactory.fetch();
+};
+
+angular.module('StaffingUI').config(function($routeProvider) {
     'use strict';
 
     // Similar to backbone router. Angular routes gives us $routeProvider.
@@ -37,7 +44,7 @@ angular.module('Demo').config(function($routeProvider) {
         });
 });
 
-angular.module('Demo').controller('NavbarCtrl', function($scope, $location) {
+angular.module('StaffingUI').controller('NavbarCtrl', function($scope, $location) {
     'use strict';
 
     $scope.isActive = function(viewLocation) {
@@ -45,8 +52,34 @@ angular.module('Demo').controller('NavbarCtrl', function($scope, $location) {
     };
 });
 
-angular.module('Demo').controller('TitlesCtrl', function($scope, $http) {
+// Factory allows us to list out our titles in the dropdown
+// Unless you have a good reason to use a service, it's better to use a Factory
+// We use a factory for sharing data or functionality between controllers.
+// Allows us to keep our logic out of our controllers.
+angular.module('StaffingUI').factory('TitleFactory', function($http) {
+  var titles = [];
+
+  var fetch = function() {
+    $http.get('http://localhost:3000/titles').success(function(response) {
+      // use angular.copy() to retain the original array which the controllers
+      // are bound to. tasks = response will overwrite the array with a new one
+      // and the controllers loose the reference. could also do tasks.length = 0,
+      // then push in the new items
+      angular.copy(response, titles);
+    });
+  };
+
+  return {
+    titles: titles,
+    fetch: fetch
+  };
+})
+
+// Remember to pass in TitleFactory as a parameter for controllers where we need to access it.
+angular.module('StaffingUI').controller('TitlesCtrl', function($scope, $http, TitleFactory) {
   'use strict';
+
+  $scope.titles = TitleFactory.titles;
 
   $http.get('http://localhost:3000/titles').success(function(response) {
     $scope.titles = response;
@@ -83,8 +116,10 @@ angular.module('Demo').controller('TitlesCtrl', function($scope, $http) {
     };
 });
 
-angular.module('Demo').controller('UsersCtrl', function($scope, $http) {
+angular.module('StaffingUI').controller('UsersCtrl', function($scope, $http, TitleFactory) {
   'use strict';
+
+  $scope.titles = TitleFactory.titles;
 
   $http.get('http://localhost:3000/users').success(function(response) {
     $scope.users = response;
@@ -94,16 +129,12 @@ angular.module('Demo').controller('UsersCtrl', function($scope, $http) {
     var params = {
       user: {
         first_name: user.first_name,
-        last_name: user.last_name,
-        title: {
-            name: user.title.name
-        }
+        last_name: user.last_name
       }
     };
 
     if (user.id) {
       $http.put('http://localhost:3000/users/' + user.id, params).success(function(response) {
-        debugger
         $scope.user = response;
       });
     } else {

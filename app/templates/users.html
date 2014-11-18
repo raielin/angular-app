@@ -11,8 +11,8 @@
       </tr>
     </thead>
     <tbody>
-      <!-- a double colon here will prevent the entire collection from watching for changes. -->
-      <tr ng-repeat="user in ::users">
+      <!-- a double colon here "user in ::users" would prevent the entire collection from watching for changes. -->
+      <tr ng-repeat="user in users">
         <!-- Double colon says we will load it in once and never update it again. Stops two-way -->
         <!-- binding after it loads. This does it for each field. -->
         <td>{{ ::user.first_name }}</td>
@@ -25,7 +25,7 @@
 
   <br/>
   <h3>Add or Edit a User</h3>
-  <form role="form" name="editUsersForm" ng-submit="createAndUpdateUsers(user)" novalidate>
+  <form role="form" name="editUsersForm" ng-submit="upsertUsers(user)" novalidate>
     <div class="form-group">
       <!-- <label for="first_name">First Name</label> -->
       <input type="text" class="form-control" id="first_name" placeholder="First Name" ng-model="user.first_name" required>

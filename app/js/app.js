@@ -11,7 +11,8 @@ angular.module('StaffingUI', [
 
 // A run module will run this function right away as soon as the
 // page loads. Here, we're going out and grabbing the titles.
-angular.module('StaffingUI').run(function(TitleFactory) {
+angular.module('StaffingUI').run(function(UserFactory, TitleFactory) {
+  UserFactory.fetch();
   TitleFactory.fetch();
 });
 
@@ -73,7 +74,22 @@ angular.module('StaffingUI').factory('TitleFactory', function($http) {
     titles: titles,
     fetch: fetch
   };
-})
+});
+
+angular.module('StaffingUI').factory('UserFactory', function($http) {
+  var users = [];
+
+  var fetch = function() {
+    $http.get('http://localhost:3000/users').success(function(response) {
+      angular.copy(response, users);
+    });
+  };
+
+  return {
+    users: users,
+    fetch: fetch
+  };
+});
 
 // Remember to pass in TitleFactory as a parameter for controllers where we need to access it.
 angular.module('StaffingUI').controller('TitlesCtrl', function($scope, $http, TitleFactory) {
@@ -81,22 +97,28 @@ angular.module('StaffingUI').controller('TitlesCtrl', function($scope, $http, Ti
 
   $scope.titles = TitleFactory.titles;
 
-  $http.get('http://localhost:3000/titles').success(function(response) {
-    $scope.titles = response;
-  });
+  // $http.get('http://localhost:3000/titles').success(function(response) {
+  //   $scope.titles = response;
+  // });
 
-  $scope.createAndUpdateTitles = function(title) {
+  $scope.upsertTitles = function(title) {
     var params = {
       title: title
     };
 
     if (title.id) {
       $http.put('http://localhost:3000/titles/' + title.id, params).success(function(response) {
-        $scope.title = response;
+        // $scope.title = response;
+        TitleFactory.fetch();
+        // Don't need this.
+        // $scope.titles = TitleFactory.titles;
       });
     } else {
         $http.post('http://localhost:3000/titles', params).success(function(response) {
-          $scope.titles.push(response)
+          // $scope.titles.push(response)
+          TitleFactory.fetch();
+          // Don't need this.
+          // $scope.titles = TitleFactory.titles;
         });
     }
 
@@ -116,34 +138,39 @@ angular.module('StaffingUI').controller('TitlesCtrl', function($scope, $http, Ti
     };
 });
 
-angular.module('StaffingUI').controller('UsersCtrl', function($scope, $http, TitleFactory) {
+angular.module('StaffingUI').controller('UsersCtrl', function($scope, $http, UserFactory, TitleFactory) {
   'use strict';
 
+  // $http.get('http://localhost:3000/users').success(function(response) {
+  //   $scope.users = response;
+  // });
+
+  $scope.users = UserFactory.users;
   $scope.titles = TitleFactory.titles;
 
-  $http.get('http://localhost:3000/users').success(function(response) {
-    $scope.users = response;
-  });
 
-  $scope.createAndUpdateUsers = function(user) {
+  $scope.upsertUsers = function(user) {
     var params = {
-      // API isn't allowing a user to be updated without skills
-      // user: user
-      user: {
-        first_name: user.first_name,
-        last_name: user.last_name,
-        title_id: user.title_id
-      }
+      user: user
+      // user: {
+      //   first_name: user.first_name,
+      //   last_name: user.last_name,
+      //   title_id: user.title_id
+      // }
     };
 
     if (user.id) {
-      // console.log(params);
       $http.put('http://localhost:3000/users/' + user.id, params).success(function(response) {
-        $scope.users = response;
+        // $scope.users = response;
+        UserFactory.fetch();
+        // $scope.users = UserFactory.users;
       });
     } else {
         $http.post('http://localhost:3000/users', params).success(function(response) {
           $scope.users.push(response)
+          // $scope.users = UserFactory.users;
+          UserFactory.fetch();
+          // $scope.users = UserFactory.users;
         });
     }
 

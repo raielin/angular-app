@@ -49,14 +49,6 @@ angular.module('StaffingUI').config(function($routeProvider) {
         });
 });
 
-angular.module('StaffingUI').controller('NavbarCtrl', function($scope, $location) {
-    'use strict';
-
-    $scope.isActive = function(viewLocation) {
-        return viewLocation === $location.path();
-    };
-});
-
 // Factory allows us to list out our titles in the dropdown
 // Unless you have a good reason to use a service, it's better to use a Factory
 // We use a factory for sharing data or functionality between controllers.

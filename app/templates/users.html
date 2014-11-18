@@ -18,14 +18,14 @@
         <td>{{ ::user.first_name }}</td>
         <td>{{ ::user.last_name }}</td>
         <td>{{ ::user.title.name }}</td>
-        <td><a ng-click="upsertUser(user)">Update</a> | <a ng-click="deleteUser(user)">Delete</a></td>
+        <td><a ng-click="editUser(user)">Update</a> | <a ng-click="deleteUser(user)">Delete</a></td>
       </tr>
     </tbody>
   </table>
 
   <br/>
   <h3>Add or Edit a User</h3>
-  <form role="form" name="upsertUsersForm" ng-submit="createAndUpdateUsers(user)" novalidate>
+  <form role="form" name="editUsersForm" ng-submit="createAndUpdateUsers(user)" novalidate>
     <div class="form-group">
       <!-- <label for="first_name">First Name</label> -->
       <input type="text" class="form-control" id="first_name" placeholder="First Name" ng-model="user.first_name" required>
@@ -45,7 +45,7 @@
       </select>
     </div>
 
-    <button type="submit" class="btn btn-primary" ng-disabled="upsertUsersForm.$invalid">Submit</button>
+    <button type="submit" class="btn btn-primary" ng-disabled="editUsersForm.$invalid">Submit</button>
   </form>
 
 </div>

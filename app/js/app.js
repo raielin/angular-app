@@ -13,7 +13,7 @@ angular.module('StaffingUI', [
 // page loads. Here, we're going out and grabbing the titles.
 angular.module('StaffingUI').run(function(TitleFactory) {
   TitleFactory.fetch();
-};
+});
 
 angular.module('StaffingUI').config(function($routeProvider) {
     'use strict';
@@ -104,7 +104,7 @@ angular.module('StaffingUI').controller('TitlesCtrl', function($scope, $http, Ti
 
   };
 
-  $scope.upsertTitle = function(title) {
+  $scope.editTitle = function(title) {
     $scope.title = title;
   };
 
@@ -127,15 +127,19 @@ angular.module('StaffingUI').controller('UsersCtrl', function($scope, $http, Tit
 
   $scope.createAndUpdateUsers = function(user) {
     var params = {
+      // API isn't allowing a user to be updated without skills
+      // user: user
       user: {
         first_name: user.first_name,
-        last_name: user.last_name
+        last_name: user.last_name,
+        title_id: user.title_id
       }
     };
 
     if (user.id) {
+      // console.log(params);
       $http.put('http://localhost:3000/users/' + user.id, params).success(function(response) {
-        $scope.user = response;
+        $scope.users = response;
       });
     } else {
         $http.post('http://localhost:3000/users', params).success(function(response) {
@@ -147,7 +151,7 @@ angular.module('StaffingUI').controller('UsersCtrl', function($scope, $http, Tit
 
   };
 
-  $scope.upsertUser = function(user) {
+  $scope.editUser = function(user) {
     $scope.user = user;
   };
 

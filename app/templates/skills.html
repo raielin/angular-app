@@ -1,0 +1,29 @@
+<div class="container" ng-controller="SkillsCtrl">
+
+  <h1>Skills</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="skill in skills">
+        <td>{{ ::skill.name }}</td>
+        <td><a ng-click="editSkill(skill)">Update</a> | <a ng-click="deleteSkill(skill)">Delete</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br/>
+  <h3>Add or Edit a Skill</h3>
+  <form role="form" name="editSkillsForm" ng-submit="upsertSkills(skill)" novalidate>
+    <div class="form-group">
+      <input type="text" class="form-control" id="name" placeholder="Skill Name" ng-model="skill.name" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary" ng-disabled="editSkillsForm.$invalid">Submit</button>
+  </form>
+
+</div>

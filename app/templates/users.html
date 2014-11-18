@@ -11,7 +11,8 @@
       </tr>
     </thead>
     <tbody>
-      <!-- a double colon here "user in ::users" would prevent the entire collection from watching for changes. -->
+      <!-- a double colon here, "user in ::users", would prevent Angular from -->
+      <!-- watching for changes in the entire collection -->
       <tr ng-repeat="user in users">
         <!-- Double colon says we will load it in once and never update it again. Stops two-way -->
         <!-- binding after it loads. This does it for each field. -->

@@ -11,9 +11,10 @@ angular.module('StaffingUI', [
 
 // A run module will run this function right away as soon as the
 // page loads. Here, we're going out and grabbing the titles.
-angular.module('StaffingUI').run(function(UserFactory, TitleFactory) {
+angular.module('StaffingUI').run(function(UserFactory, TitleFactory, SkillFactory) {
   UserFactory.fetch();
   TitleFactory.fetch();
+  SkillFactory.fetch();
 });
 
 angular.module('StaffingUI').config(function($routeProvider) {
@@ -26,22 +27,25 @@ angular.module('StaffingUI').config(function($routeProvider) {
     // Templates are JUST HTML files. Go to HTML file - look for ng-view.
     $routeProvider
         .when('/', {
-            templateUrl: 'templates/home.html'
+          templateUrl: 'templates/home.html'
         })
         .when('/about', {
-            templateUrl: 'templates/about.html'
+          templateUrl: 'templates/about.html'
         })
         .when('/contact', {
-            templateUrl: 'templates/contact.html'
+          templateUrl: 'templates/contact.html'
         })
         .when('/users', {
-            templateUrl: 'templates/users.html'
+          templateUrl: 'templates/users.html'
         })
         .when('/titles', {
-            templateUrl: 'templates/titles.html'
+          templateUrl: 'templates/titles.html'
+        })
+        .when('/skills', {
+          templateUrl: 'templates/skills.html'
         })
         .otherwise({
-            redirectTo: '/'
+          redirectTo: '/'
         });
 });
 
@@ -57,6 +61,22 @@ angular.module('StaffingUI').controller('NavbarCtrl', function($scope, $location
 // Unless you have a good reason to use a service, it's better to use a Factory
 // We use a factory for sharing data or functionality between controllers.
 // Allows us to keep our logic out of our controllers.
+
+angular.module('StaffingUI').factory('UserFactory', function($http) {
+  var users = [];
+
+  var fetch = function() {
+    $http.get('http://localhost:3000/users').success(function(response) {
+      angular.copy(response, users);
+    });
+  };
+
+  return {
+    users: users,
+    fetch: fetch
+  };
+});
+
 angular.module('StaffingUI').factory('TitleFactory', function($http) {
   var titles = [];
 
@@ -76,66 +96,20 @@ angular.module('StaffingUI').factory('TitleFactory', function($http) {
   };
 });
 
-angular.module('StaffingUI').factory('UserFactory', function($http) {
-  var users = [];
+
+angular.module('StaffingUI').factory('SkillFactory', function($http) {
+  var skills = [];
 
   var fetch = function() {
-    $http.get('http://localhost:3000/users').success(function(response) {
-      angular.copy(response, users);
+    $http.get('http://localhost:3000/skills').success(function(response) {
+      angular.copy(response, skills);
     });
   };
 
   return {
-    users: users,
+    skills: skills,
     fetch: fetch
   };
-});
-
-// Remember to pass in TitleFactory as a parameter for controllers where we need to access it.
-angular.module('StaffingUI').controller('TitlesCtrl', function($scope, $http, TitleFactory) {
-  'use strict';
-
-  $scope.titles = TitleFactory.titles;
-
-  // $http.get('http://localhost:3000/titles').success(function(response) {
-  //   $scope.titles = response;
-  // });
-
-  $scope.upsertTitles = function(title) {
-    var params = {
-      title: title
-    };
-
-    if (title.id) {
-      $http.put('http://localhost:3000/titles/' + title.id, params).success(function(response) {
-        // $scope.title = response;
-        TitleFactory.fetch();
-        // Don't need this.
-        // $scope.titles = TitleFactory.titles;
-      });
-    } else {
-        $http.post('http://localhost:3000/titles', params).success(function(response) {
-          // $scope.titles.push(response)
-          TitleFactory.fetch();
-          // Don't need this.
-          // $scope.titles = TitleFactory.titles;
-        });
-    }
-
-    $scope.title = {};
-
-  };
-
-  $scope.editTitle = function(title) {
-    $scope.title = title;
-  };
-
-  $scope.deleteTitle = function(title) {
-    $http.delete('http://localhost:3000/titles/' + title.id).success(function(response) {
-        var index = $scope.titles.indexOf(title);
-        $scope.titles.splice(index, 1);
-      })
-    };
 });
 
 angular.module('StaffingUI').controller('UsersCtrl', function($scope, $http, UserFactory, TitleFactory) {
@@ -186,6 +160,89 @@ angular.module('StaffingUI').controller('UsersCtrl', function($scope, $http, Use
     $http.delete('http://localhost:3000/users/' + user.id).success(function(response) {
         var index = $scope.users.indexOf(user);
         $scope.users.splice(index, 1);
+      })
+    };
+});
+
+// Remember to pass in TitleFactory as a parameter for controllers where we need to access it.
+angular.module('StaffingUI').controller('TitlesCtrl', function($scope, $http, TitleFactory) {
+  'use strict';
+
+  $scope.titles = TitleFactory.titles;
+
+  // $http.get('http://localhost:3000/titles').success(function(response) {
+  //   $scope.titles = response;
+  // });
+
+  $scope.upsertTitles = function(title) {
+    var params = {
+      title: title
+    };
+
+    if (title.id) {
+      $http.put('http://localhost:3000/titles/' + title.id, params).success(function(response) {
+        // $scope.title = response;
+        TitleFactory.fetch();
+        // Don't need this.
+        // $scope.titles = TitleFactory.titles;
+      });
+    } else {
+        $http.post('http://localhost:3000/titles', params).success(function(response) {
+          // $scope.titles.push(response)
+          TitleFactory.fetch();
+          // Don't need this.
+          // $scope.titles = TitleFactory.titles;
+        });
+    }
+
+    $scope.title = {};
+
+  };
+
+  $scope.editTitle = function(title) {
+    $scope.title = title;
+  };
+
+  $scope.deleteTitle = function(title) {
+    $http.delete('http://localhost:3000/titles/' + title.id).success(function(response) {
+        var index = $scope.titles.indexOf(title);
+        $scope.titles.splice(index, 1);
+      })
+    };
+});
+
+angular.module('StaffingUI').controller('SkillsCtrl', function($scope, $http, SkillFactory) {
+  'use strict';
+
+  $scope.skills = SkillFactory.skills;
+
+  $scope.upsertSkills = function(skill) {
+    var params = {
+      skill: skill
+    };
+
+    if (skill.id) {
+      $http.put('http://localhost:3000/skills/' + skill.id, params).success(function(response) {
+        SkillFactory.fetch();
+      });
+    } else {
+        $http.post('http://localhost:3000/skills', params).success(function(response) {
+          SkillFactory.fetch();
+        });
+    }
+
+    $scope.skill = {};
+
+  };
+
+  $scope.editSkill = function(skill) {
+    $scope.skill = skill;
+  };
+
+  $scope.deleteSkill = function(skill) {
+    $http.delete('http://localhost:3000/skills/' + skill.id).success(function(response) {
+        var index = $scope.skills.indexOf(skill);
+        $scope.skills.splice(index, 1);
       })
     };
 });

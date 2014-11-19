@@ -3,11 +3,11 @@
 // We use a factory for sharing data or functionality between controllers.
 // Allows us to keep our logic out of our controllers.
 
-angular.module('StaffingUI').factory('UserFactory', function($http) {
+angular.module('StaffingUI').factory('UserFactory', function($http, ServerUrl) {
   var users = [];
 
   var fetch = function() {
-    $http.get('http://localhost:3000/users').success(function(response) {
+    $http.get(ServerUrl + 'users').success(function(response) {
       angular.copy(response, users);
     });
   };

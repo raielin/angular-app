@@ -1,3 +1,12 @@
 body {
     padding-top: 50px;
 }
+
+a {
+  cursor: pointer;
+}
+
+label .skill-boxes {
+  font-weight: normal
+  color: red;
+}

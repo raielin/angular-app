@@ -1,4 +1,4 @@
-angular.module('StaffingUI').controller('SkillCtrl', function($scope, $http, SkillFactory) {
+angular.module('StaffingUI').controller('SkillCtrl', function($scope, $http, ServerUrl, SkillFactory) {
   'use strict';
 
   $scope.skills = SkillFactory.skills;
@@ -9,11 +9,11 @@ angular.module('StaffingUI').controller('SkillCtrl', function($scope, $http, Ski
     };
 
     if (skill.id) {
-      $http.put('http://localhost:3000/skills/' + skill.id, params).success(function(response) {
+      $http.put(ServerUrl + 'skills/' + skill.id, params).success(function(response) {
         SkillFactory.fetch();
       });
     } else {
-        $http.post('http://localhost:3000/skills', params).success(function(response) {
+        $http.post(ServerUrl + 'skills', params).success(function(response) {
           SkillFactory.fetch();
         });
     }
@@ -27,7 +27,7 @@ angular.module('StaffingUI').controller('SkillCtrl', function($scope, $http, Ski
   };
 
   $scope.deleteSkill = function(skill) {
-    $http.delete('http://localhost:3000/skills/' + skill.id).success(function(response) {
+    $http.delete(ServerUrl + 'skills/' + skill.id).success(function(response) {
         var index = $scope.skills.indexOf(skill);
         $scope.skills.splice(index, 1);
       })

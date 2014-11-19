@@ -1,53 +1,71 @@
-<div class="container" ng-controller="UserCtrl">
-
-<h1>Users</h1>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Title</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- a double colon here, "user in ::users", would prevent Angular from -->
-      <!-- watching for changes in the entire collection -->
-      <tr ng-repeat="user in users">
-        <!-- Double colon says we will load it in once and never update it again. Stops two-way -->
-        <!-- binding after it loads. This does it for each field. -->
-        <td>{{ ::user.first_name }}</td>
-        <td>{{ ::user.last_name }}</td>
-        <td>{{ ::user.title.name }}</td>
-        <td><a ng-click="editUser(user)">Update</a> | <a ng-click="deleteUser(user)">Delete</a></td>
-      </tr>
-    </tbody>
-  </table>
-
-  <br/>
-  <h3>Add or Edit a User</h3>
-  <form role="form" name="editUsersForm" ng-submit="upsertUsers(user)" novalidate>
-    <div class="form-group">
-      <!-- <label for="first_name">First Name</label> -->
-      <input type="text" class="form-control" id="first_name" placeholder="First Name" ng-model="user.first_name" required>
+<div class="container">
+  <h1>Users</h1>
+  <div class="row">
+    <div class="col-md-6">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Title</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- a double colon here, "user in ::users", would prevent Angular from -->
+          <!-- watching for changes in the entire collection -->
+          <tr ng-repeat="user in users">
+            <!-- Double colon says we will load it in once and never update it again. Stops two-way -->
+            <!-- binding after it loads. This does it for each field. -->
+            <td>{{ ::user.first_name }}</td>
+            <td>{{ ::user.last_name }}</td>
+            <td>{{ ::user.title.name }}</td>
+            <td><a ng-click="editUser(user)">Update</a> | <a ng-click="deleteUser(user)">Delete</a></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <div class="form-group">
-      <!-- <label for="last_name">Last Name</label> -->
-      <input type="text" class="form-control" id="last_name" placeholder="Last Name" ng-model="user.last_name" required>
+    <div class="col-md-5 col-md-offset-1">
+      <h3>Add or Edit a User</h3>
+      <form role="form" name="editUsersForm" ng-submit="upsertUsers(user)" novalidate>
+        <div class="form-group">
+          <label for="first_name">First Name</label>
+          <input type="text" class="form-control" id="first_name" placeholder="First Name" ng-model="user.first_name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="last_name">Last Name</label>
+          <input type="text" class="form-control" id="last_name" placeholder="Last Name" ng-model="user.last_name" required>
+        </div>
+
+        <div class="form-group">
+          <!-- ng-options generates option tag. we're saying option tag's value is title.id, the second piece is what -->
+          <!-- the user sees, which in this case is title.name -->
+          <select class="form-control" ng-model="user.title_id" ng-options="title.id as title.name for title in titles">
+            <!-- Important to have the value as an empty string. Angular needs this format -->
+            <option value="">Select a Title</option>
+          </select>
+        </div>
+
+        <h3>Skills</h3>
+
+        <div class="form-group">
+          <div class="checkbox-inline skill-boxes" ng-repeat="skill in skills">
+            <label>
+              <!-- userHasSkill(skill) is a function we define in our controller that returns -->
+              <!-- true or false and then passing that to ng-checked -->
+              <!-- In Angular, any form should be tied to a model. -->
+              <!-- skill.checked doesn't exist in the database, it's purely for the UI and defined -->
+              <!-- in our skill factory -->
+              <input type="checkbox" value="{{ skill.id }}" ng-checked="userHasSkill(skill)" ng-model="skill.checked">{{ skill.name }}
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" ng-disabled="editUsersForm.$invalid">Submit</button>
+      </form>
+
     </div>
-
-    <div class="form-group">
-      <!-- ng-options generates option tag. we're saying option tag's value is title.id, the second piece is what -->
-      <!-- the user sees, which in this case is title.name -->
-      <select class="form-control" ng-model="user.title_id" ng-options="title.id as title.name for title in titles">
-        <!-- Important to have the value as an empty string. Angular needs this format -->
-        <option value="">Select a Title</option>
-      </select>
-    </div>
-
-    <button type="submit" class="btn btn-primary" ng-disabled="editUsersForm.$invalid">Submit</button>
-  </form>
-  <br/>
-
+  </div>
 </div>

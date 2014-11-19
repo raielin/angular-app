@@ -1,4 +1,4 @@
-<div class="container" ng-controller="SkillCtrl">
+<div class="container">
 
   <h1>Skills</h1>
   <table class="table">
@@ -16,6 +16,12 @@
     </tbody>
   </table>
 
+<!--   <div class="checkbox">
+    <label class="checkbox-inline" ng-repeat="skill in skills"><input type="checkbox" id="skill" ng-model="skill.name">
+      {{ ::skill.name }}
+    </label>
+  </div>
+ -->
   <br/>
   <h3>Add or Edit a Skill</h3>
   <form role="form" name="editSkillsForm" ng-submit="upsertSkills(skill)" novalidate>
@@ -26,5 +32,7 @@
     <button type="submit" class="btn btn-primary" ng-disabled="editSkillsForm.$invalid">Submit</button>
   </form>
   <br/>
+
+
 
 </div>
